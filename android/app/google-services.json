@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "865003278563",
+    "project_id": "demolocker-8c4f4",
+    "storage_bucket": "demolocker-8c4f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865003278563:android:faf8dccef43a7fe07cb5d6",
+        "android_client_info": {
+          "package_name": "com.example.demo_locker_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865003278563-n6dvirkcgggjagu9jtushldciav31j4f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDjmwCFUhQCONSXde3bjorN6pqypv-KIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865003278563-n6dvirkcgggjagu9jtushldciav31j4f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
