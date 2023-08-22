@@ -1,12 +1,13 @@
-import 'dart:io';
+// ignore_for_file: avoid_print
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_locker_app/routes/app_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/repository/auth_repository.dart';
-import '../../../helpers/enum.dart';
-import '../../../helpers/helpers.dart';
-import '../../../routes/app_route.dart';
+
 import '../no_internet/no_internet_controller.dart';
 
 class RegistrationController extends GetxController {
@@ -18,7 +19,7 @@ class RegistrationController extends GetxController {
 
   //text editing controller
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController masterKeyController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
@@ -28,61 +29,24 @@ class RegistrationController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  registration() {
-    if (internetController.isinternetConnected.value == true) {
-      if (registerformKey.currentState!.validate()) {
-        isLoading.value = true;
-        update();
-        authRepo?.registerUser(jsonData: {
-          "email": emailController.text.trim(),
-          "first_name": firstNameController.text.trim(),
-          "last_name": lastNameController.text.trim(),
-          "password": passwordController.text.trim(),
-          'phone_number': contactNumberController.text.toString(),
-          'country_code': "+${countryCode.value}",
-          'device_type': Platform.isAndroid ? "1" : "2",
-          'device_token': deviceToken
-        }).then((response) async {
-          if (response != null) {
-            isLoading.value = false;
-            if (response.statusCode == 200) {
-              Get.toNamed(ROUTE_OTP_VERIFICATION,
-                  arguments: [true, emailController.text, false]);
-              emailController.clear();
-              firstNameController.clear();
-              lastNameController.clear();
-              passwordController.clear();
-              contactNumberController.clear();
-              getSnackBar(response.data['message'] ?? "", SNACK.SUCCESS);
-              update();
-            } else if (response.statusCode == 403) {
-              Get.toNamed(ROUTE_OTP_VERIFICATION,
-                  arguments: [true, emailController.text, true, true]);
-              emailController.clear();
-              firstNameController.clear();
-              lastNameController.clear();
-              passwordController.clear();
-              contactNumberController.clear();
-              update();
-            } else {
-              getSnackBar('Email is already taken.', SNACK.FAILED);
-              update();
-            }
-          } else {
-            isLoading.value = false;
-            getSnackBar(
-                "Something went wrong,please try again later.", SNACK.FAILED);
-            update();
-          }
-        });
-      }
-    } else {
-      getSnackBar("No Internet Connection. Please try again.", SNACK.FAILED);
+  void registerUser(String email, String masterKey) async {
+    try {
+      final authResult = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: masterKey,
+      );
+
+      // Store user's email in Firestore
+      await _firestore.collection('users').doc(authResult.user?.uid).set({
+        'email': email,
+        'uid': authResult.user?.uid,
+      });
+      Get.offAllNamed(ROUTE_LOGIN);
+    } catch (error) {
+      print('Registration error: $error');
     }
   }
 }

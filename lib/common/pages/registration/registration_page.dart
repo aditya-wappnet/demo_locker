@@ -190,7 +190,7 @@ class RegistrationPage extends StatelessWidget {
                           labelText: "Master Password",
                           keyboardType: TextInputType.text,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          editingController: controller.passwordController,
+                          editingController: controller.masterKeyController,
                           obscureText: !controller.isVisible.value,
                           validator: controller.authRepo?.validation
                               ?.validation(
@@ -224,7 +224,10 @@ class RegistrationPage extends StatelessWidget {
                             isLoading: controller.isLoading.value,
                             text: "Register",
                             onPressed: () {
-                              controller.registration();
+                              print('hi');
+                              controller.registerUser(
+                                  controller.emailController.text,
+                                  controller.masterKeyController.text);
                             },
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:demo_locker_app/pages/home_page/home_page_binding.dart';
 import 'package:get/get.dart';
 
 import '../common/pages/forgot_password/forgot_password_binding.dart';
@@ -47,5 +48,6 @@ final routePages = [
   GetPage(
       name: ROUTE_HOME,
       page: () => const HomePage(),
+      binding: HomeBinding(),
       transition: Transition.rightToLeft),
 ];

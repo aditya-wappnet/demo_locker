@@ -88,9 +88,7 @@ class LoginPage extends StatelessWidget {
                                 ? const Icon(Icons.visibility_outlined)
                                 : const Icon(Icons.visibility_off_outlined),
                           ),
-                          onFieldSubmitted: (p0) {
-                            controller.login();
-                          },
+                          onFieldSubmitted: (p0) {},
                         ),
                       )),
                   SizedBox(
@@ -128,7 +126,8 @@ class LoginPage extends StatelessWidget {
                             isLoading: controller.isLoading.value,
                             text: "Login",
                             onPressed: () {
-                              controller.login();
+                              controller.login(controller.emailController.text,
+                                  controller.passwordController.text);
                             },
                           ),
                         ),

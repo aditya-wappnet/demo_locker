@@ -52,6 +52,8 @@ dependencies:
   show_up_animation: ^2.0.0
   crypto: ^3.0.3
   pointycastle: ^3.7.3
+  flutter_secure_storage: ^8.0.0
+  convert: ^3.1.1
 
 dev_dependencies:
   flutter_test:
