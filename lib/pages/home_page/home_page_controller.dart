@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convert/convert.dart';
+import 'package:demo_locker_app/pages/home_page/custom_popup_share/helper/fetch_rsa_keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,30 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     initializeEncryptionKey();
+    fetchAndPrintUserPublicKey();
+  }
+
+  void fetchAndPrintUserPublicKey() async {
+    final userId = _auth.currentUser?.uid;
+
+    if (userId != null) {
+      final userDocRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      final userDocSnapshot = await userDocRef.get();
+      if (userDocSnapshot.exists) {
+        final publicKey = userDocSnapshot.data()?['publicKey'];
+        final printPublicKey = RsaKeyHelper().parsePublicKeyFromPem(publicKey);
+        print("printPublicKey-$printPublicKey");
+        print('Modulus: ${printPublicKey.modulus}');
+        print('Exponent: ${printPublicKey.exponent}');
+      }
+    }
   }
 
   void initializeEncryptionKey() {
     const String encryptionKeyHex =
-        '923a48a81599a33b9c4a327d60d69408474ae844c69633747a86aa6403b82507';
+        'e172a0e8f82f9e3425b0d2d9af74fe2bf497297d8af5c7f10027e3c11c5949c6';
     encryptionKey = Uint8List.fromList(hex.decode(encryptionKeyHex));
   }
 
