@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convert/convert.dart';
 import 'package:demo_locker_app/pages/home_page/custom_popup_share/helper/fetch_rsa_keys.dart';
@@ -21,6 +23,7 @@ class HomeController extends GetxController {
     super.onInit();
     initializeEncryptionKey();
     fetchAndPrintUserPublicKey();
+    fetchAndPrintUserPrivateKey();
   }
 
   void fetchAndPrintUserPublicKey() async {
@@ -40,6 +43,43 @@ class HomeController extends GetxController {
       }
     }
   }
+
+  void fetchAndPrintUserPrivateKey() async {
+    final userId = _auth.currentUser?.uid;
+
+    if (userId != null) {
+      final userDocRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      final userDocSnapshot = await userDocRef.get();
+      if (userDocSnapshot.exists) {
+        final privateKey = userDocSnapshot.data()?['privateKey'];
+        print("printEncryptPrivateKey-$privateKey");
+        final decryptedPrivateKey = decryptData(privateKey, encryptionKey);
+        print("{printEncryptPublicKey - $decryptedPrivateKey}");
+        final printPrivateKey =
+            RsaKeyHelper().parsePrivateKeyFromPem(decryptedPrivateKey);
+        print("printPublicKey-$printPrivateKey");
+      }
+    }
+  }
+
+/*   String decryptPrivateKey(
+    String encryptedPrivateKey, RSAPrivateKey privateKey, String encryptionKeyHex) {
+  final rsaDecrypter = RSAEngine()
+    ..init(
+      false,
+      PrivateKeyParameter<RSAPrivateKey>(privateKey),
+    );
+
+  final cipherText = base64.decode(encryptedPrivateKey);
+
+  final decryptedEncryptionKey = rsaDecrypter.process(cipherText);
+  
+  final decryptedKeyHex = hex.encode(decryptedEncryptionKey);
+
+  return decryptedKeyHex;
+} */
 
   void initializeEncryptionKey() {
     const String encryptionKeyHex =

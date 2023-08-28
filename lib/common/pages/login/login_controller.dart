@@ -63,6 +63,7 @@ class LoginController extends GetxController {
       if (authResult.user != null) {
         final encryptionKey =
             generateEncryptionKey(password, email, authResult.user!.uid);
+        
         final encryptionKeyHex = uint8ListToHex(encryptionKey);
         print("Generated Encryption Key: $encryptionKeyHex");
         final userDocRef = FirebaseFirestore.instance

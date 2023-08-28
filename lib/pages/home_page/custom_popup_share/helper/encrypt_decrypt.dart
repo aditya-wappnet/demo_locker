@@ -11,9 +11,9 @@ String encryptData(String data, Uint8List encryptionKey) {
   return base64.encode(encryptedData);
 }
 
-String decryptData(String encryptedData, Uint8List encryptionKey) {
+String decryptData(String encryptedData, Uint8List decryptionKey) {
   final encrypter = BlockCipher('AES')
-    ..init(false, KeyParameter(encryptionKey));
+    ..init(false, KeyParameter(decryptionKey));
   final decryptedData =
       String.fromCharCodes(encrypter.process(base64.decode(encryptedData)));
   return decryptedData.trim();
